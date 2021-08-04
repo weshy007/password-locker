@@ -28,3 +28,8 @@ class TestUser(unittest.TestCase):
 		'''
 		self.new_user.save_user()
 		self.assertEqual(len(User.users_list),1)
+
+
+
+if __name__ == '__main__':
+	unittest.main(verbosity=2)
