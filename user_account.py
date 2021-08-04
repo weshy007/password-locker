@@ -34,7 +34,7 @@ class Credentials:
     user_credentials_list = []
 
     @classmethod
-    def check_user(cls,first_name, password):
+    def check_user(cls,first_name,password):
         '''
         checks details entered accross the users_list
         '''
@@ -44,7 +44,7 @@ class Credentials:
                 current_user = user.first_name
         return current_user
 
-    def __init__(self, user_name, site_name,account_name,password):
+    def __init__(self, user_name,site_name,account_name,password):
         '''
         define properties and instance
         '''

@@ -1,5 +1,4 @@
-import pyperclip
-from user_account import User,Credentials
+from user_account import User, Credentials
 
 def create_user(fname,lname,password):
 	'''
@@ -14,10 +13,11 @@ def save_user(user):
 	'''
 	User.save_user(user)
 
+
 def verify_user(first_name,password):
 	'''
-	validation of the user before creating credentials
-	'''
+    validation of the user before creating credentials	
+    '''
 	checking_user = Credentials.check_user(first_name,password)
 	return checking_user
 
@@ -30,7 +30,7 @@ def generate_password():
 
 def create_credential(user_name,site_name,account_name,password):
 	'''
-	create a new credential
+	to create a new credential
 	'''
 	new_credential=Credentials(user_name,site_name,account_name,password)
 	return new_credential
@@ -54,104 +54,83 @@ def copy_credential(site_name):
 	return Credentials.copy_credential(site_name)
 
 def main():
-    print("*"*40)
-    print('\nWelcome to Password Locker')
-    while True:
-        print('Pick One: \n 1. Create Account \n 2. Login \n 3. Exit')
-        user_pick = input().strip()
+	print(' ')
+	print('WELCOME TO PASSWORD LOCKER.')
+	while True:
+		print("*"*60)
+		print('Use these codes to navigate: \n 1.Create an Account \n 2.Log In \n 3.Exit')
+		user_pick = input('Enter Option: ').strip()
+		if user_pick == '3':
+			break
 
+		elif user_pick == '1':
+			print("*"*60)
+			print('To create a new account: ')
+			first_name = input('Enter your first name: ').strip()
+			last_name = input('Enter your last name: ').strip()
+			password = input('Enter your password: ').strip()
+			save_user(create_user(first_name,last_name,password))
 
-        if user_pick == '1': # Create Account
-            print("*"*40 )
-            print('To create a new Account')
-            first_name = input('\nEnter your first name: ').strip
-            last_name = input('\nEnter your last name: ').strip
-            password = input('\nEnter your password: \n').strip
+			print(f'New Account Created for: {first_name} {last_name} using Password: {password}')
+		elif user_pick == '2':
+			print("*"*60)
+			print('To login, enter your account details \n')
+			user_name = input('Enter your first name: ').strip()
+			password = str(input('Enter your password:  '))
+			user_exists = verify_user(user_name,password)
 
-            save_user(create_user(first_name,last_name,password))
-            print(f"New Account Created for : {first_name} {last_name}")
+			if user_exists == user_name:
+				print(f'\nWelcome {user_name.capitalize()}. Please choose an option to continue.')
+				while True:
+					print("*"*60)
+					print('\n 1.Create a Credential \n 2.Display Credentials \n 3.Copy Password \n 4.Exit')
+					short_code = input('Enter an Option: ').strip()
+					print("*"*60)
+					if short_code == '4':
+						print(f'Goodbye {user_name.capitalize()}')
+						break
 
-        elif user_pick == '2': # Login
-            print("*"*40 )
-            print('To Log In Enter Details: ')
-            user_name = input('Enter your first name: \n').strip
-            password = str(input('Enter your password: \n'))
-            user_exists = verify_user(user_name,password)
-            if user_exists == user_name:
-                print(f'Welcome{first_name}. Please pick an option to continue\n')
-                while True:
-                    print('1. Create Credential \n2. Display Credentials \n3.Copy Password \n4. Exit' )
-                    user_pick = input('Enter pick: ').strip()
+					elif short_code == '1':
+						print('Enter your credential details:')
+						site_name = input('Enter the site\'s name- ').strip()
+						account_name = input('Enter your account\'s name - ').strip()
+						while True:
+							print('\nPlease choose an option for entering a password: \n 1.Enter existing password \n 2.Generate a password \n 3.Exit')
+							psw_choice = input('Enter an option: ').lower().strip()
+							if psw_choice == '1':
+								password = input('\nEnter your password: ').strip()
+								break
+							elif psw_choice == '2':
+								password = generate_password()
+								break
+							elif psw_choice == '3':
+								break
+							else:
+								print('Wrong option entered.Please try again.')
+						save_credential(create_credential(user_name,site_name,account_name,password))
+						print(f'Credential Created: Site Name: {site_name} - Account Name: {account_name} - Password: {password}\n')
 
-                    if user_pick == '1': # Create credentials
-                        print("Enter Credentials Details: ")
-                        site_name = input("Enter site's name: ").strip
-                        account_name = input("Enter Account's name: ").strip
-                        while True:
-                            print('Please choose an option for entering a password: \n 1. Enter existing password \n2. Generate password \n3. Exit')
-                            password_choice = input("Enter your pick: \n").strip
+					elif short_code == '2':
+						if display_credentials(user_name):
+							print('Here is a list of all your credentials\n')
+							for credential in display_credentials(user_name):
+								print(f'Site Name: {credential.site_name} - Account Name: {credential.account_name} - Password: {credential.password}\n')
+						else:
+							print("You don't seem to have any credentials saved yet\n")
 
-                            if password_choice == '1':
-                                password = input('Enter your passord: ').strip
-                                break
-                            elif password_choice == '2':
-                                password = generate_password()
-                                break
-                            elif password_choice == '3':
-                                break
-                            else:
-                                print('Wrong option. Please try another')
-                        save_credential(create_credential(user_name,site_name,account_name,password))
-                        print(f'/n Credential saved: Site Name: {site_name}, Account Name: {account_name}, Password: {password}')
-                    
-                    elif user_pick == '2': # Display credentials
-                        if display_credentials(user_name):
-                            print('Here are your credentials')
-                            for credential in display_credentials(user_name):
-                                print(f'Site Name: {site_name}, AccountName {account_name}, Password{password}')
+					elif short_code == '3':
+						chosen_site = input('Enter the site name for the credential password to copy: ')
+						copy_credential(chosen_site)
 
-                        else:
-                            print('You have no credentials yet')
+					else:
+						print('Wrong option entered.Please try again.')
 
-                    elif user_pick == '3': # Copy credentials
-                        site_picked = input('Enter name name of credential to copy: ')
-                        copy_credential(site_picked)
-
-
-
-                    elif user_pick == '4':
-                        print(f'Goodbye {first_name}')
-
-                    else:
-                        print('Wrong details entered')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        elif user_pick == '3': # Exit
-            break
-
-        else:
-            print('Wrong input entered')
-
-
-
-
-
-
-
-
-
+			else: 
+				print('Wrong Details. Try again or Create an Account.')		
+		
+		else:
+			print("*"*60)
+			print('Wrong option entered.Please try again.')
 
 if __name__ == '__main__':
 	main()
