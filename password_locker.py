@@ -13,7 +13,6 @@ def save_user(user):
 	'''
 	User.save_user(user)
 
-
 def verify_user(first_name,password):
 	'''
     validation of the user before creating credentials	
